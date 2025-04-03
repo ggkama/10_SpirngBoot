@@ -55,16 +55,17 @@ public class SecurityConfigure {
 				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(requests -> {
 					requests.requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh", "/members").permitAll(); // 포스트 요청으로 오는 저 두개 요청은 다 허가
-					requests.requestMatchers("/admin/**").hasRole("ADMIN"); // 어드민으로 시작하는 요청은 반드시 롤에 어드민이어야함
-					requests.requestMatchers(HttpMethod.PUT, "members").authenticated(); // 포스트 요청으로 오는 members는 걸러줘야함?
-					requests.requestMatchers(HttpMethod.DELETE, "/members").authenticated();
+					requests.requestMatchers("/admin/**").hasRole("ADMIN"); // 어드민으로 시작하는 요청은 반드시 롤에 어드민이어야함					
+					requests.requestMatchers(HttpMethod.GET, "/uploads/**", "/boards/**", "/comments/**").permitAll(); // 모든유저에게 사진, 게시글, 댓글 허용
+					requests.requestMatchers(HttpMethod.PUT, "/members", "/boards/**").authenticated(); // 포스트 요청으로 오는 members는 걸러줘야함?
+					requests.requestMatchers(HttpMethod.DELETE, "/members", "/boards/**").authenticated();
+					requests.requestMatchers(HttpMethod.POST,  "/boards", "/comments").authenticated(); //
 				})
 				 .sessionManagement(manager ->
                  manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
 				 .build(); 
 				
-		
 	}
 	
 	@Bean
